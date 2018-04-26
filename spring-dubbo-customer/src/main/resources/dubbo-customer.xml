@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/context
+          http://www.springframework.org/schema/context/spring-context-4.0.xsd
+          http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+          http://code.alibabatech.com/schema/dubbo
+		  http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:application name="spring-dubbo-customer" />
+    <dubbo:provider timeout="50000" />
+    <dubbo:consumer check="false" timeout="50000" />
+    <dubbo:registry address="${dubbo.registry.address}" />
+    <!-- 用dubbo协议在20880端口暴露服务 -->
+    <dubbo:protocol name="${dubbo.protocol.name}" port="${dubbo.protocol.port}" />
+
+    <dubbo:reference interface="com.spring.dubbo.service.UserService" id="userService"
+                     filter="transaction" loadbalance="transaction" cluster="failfast" />
+
+    <bean id="roleService" class="com.spring.dubbo.service.impl.RoleServiceImpl" />
+    <dubbo:service interface="com.spring.dubbo.service.RoleService" ref="roleService"
+                   filter="transaction" loadbalance="transaction" cluster="failfast" />
+</beans>
